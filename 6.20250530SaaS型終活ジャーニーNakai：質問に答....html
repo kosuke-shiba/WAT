@@ -1,0 +1,196 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SaaS型終活サービス：質問とゲインのジャーニー</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Visualization & Content Choices:
+        - Overall Journey: Simplified flowchart style using HTML/CSS boxes and arrows. Goal: Organize. Method: HTML/Tailwind. (NO SVG)
+        - Phase Highlights (Parent/Child): Cards for each phase. Goal: Inform/Summarize. Method: HTML/Tailwind. (NO SVG)
+            - Key Question Examples: Text snippets.
+            - Gains: Short text with Unicode icons (e.g., 💡, ❤️, ✅).
+            - Attribute Classification: Brief examples.
+        - Key Features: Icon + short description for Digital Vault & Digital Avatar. Goal: Inform. Method: HTML/Tailwind with Unicode icons (🏦, 👤). (NO SVG)
+    -->
+    <style>
+        body { font-family: 'Noto Sans JP', sans-serif; background-color: #F0F8FF; color: #333; }
+        .hero-bg-alt { background-color: #007BFF; } /* Primary Blue */
+        .accent-color-alt { color: #FFC107; } /* Vivid Yellow */
+        .section-title-alt { font-size: 2.25rem; line-height: 2.5rem; font-weight: 700; margin-bottom: 1.5rem; color: #0056b3; /* Darker Blue */ text-align: center; }
+        .sub-title-alt { font-size: 1.5rem; line-height: 2rem; font-weight: 600; margin-bottom: 1rem; color: #006ACE; /* Medium Blue */ }
+        .card-alt { background-color: white; border-radius: 0.75rem; box-shadow: 0 8px 16px rgba(0,0,0,0.1); padding: 1.5rem; transition: transform 0.3s ease, box-shadow 0.3s ease; }
+        .card-alt:hover { transform: translateY(-4px); box-shadow: 0 12px 24px rgba(0,0,0,0.15); }
+        .phase-card { border-left: 5px solid #FFC107; } /* Yellow accent for phases */
+        .gain-item { display: flex; align-items: center; margin-bottom: 0.5rem; font-size: 0.9rem; color: #4A5568; }
+        .gain-icon { margin-right: 0.5rem; color: #007BFF; font-size: 1.2rem; }
+        .flow-step { background-color: #E0F2FE; border: 1px solid #BAE6FD; color: #0C4A6E; padding: 0.75rem 1rem; border-radius: 0.5rem; text-align: center; font-weight: 500;}
+        .flow-arrow-alt { display: flex; align-items: center; justify-content: center; margin: 0.5rem 0; color: #007BFF; font-size: 1.5rem; }
+        .generation-title { font-size: 1.8rem; font-weight: 700; margin-top: 2rem; margin-bottom: 1rem; padding-bottom: 0.5rem; border-bottom: 3px solid; }
+        .parent-title { color: #2563EB; border-bottom-color: #60A5FA; } /* Blue for Parent */
+        .child-title { color: #16A34A; border-bottom-color: #4ADE80; } /* Green for Child */
+        .icon-alt { font-size: 1.5rem; margin-right: 0.5rem;}
+    </style>
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@400;500;700&display=swap" rel="stylesheet">
+</head>
+<body class="antialiased">
+
+    <header class="hero-bg-alt text-white py-10 md:py-16">
+        <div class="container mx-auto px-6 text-center">
+            <h1 class="text-4xl md:text-5xl font-bold mb-3">SaaS型終活ジャーニー</h1>
+            <p class="text-xl md:text-2xl max-w-3xl mx-auto">質問に答えて進む、あなたと家族のための未来設計ステップ</p>
+        </div>
+    </header>
+
+    <main class="container mx-auto px-4 md:px-6 py-12">
+
+        <section id="journey-overview" class="mb-16">
+            <h2 class="section-title-alt">終活の新しいカタチ：あなたのペースで進めるSaaS体験</h2>
+            <p class="text-center text-lg text-gray-700 mb-10 max-w-3xl mx-auto">
+                このサービスは、簡単な質問に答えていくだけで、ご自身の考えや家族への想いを整理し、具体的な準備へと繋げるお手伝いをします。
+                親世代・子世代それぞれの視点に合わせたステップで、無理なく、そして確実に未来への安心をデザインしましょう。
+            </p>
+            <div class="max-w-2xl mx-auto">
+                <div class="flow-step">フェーズ0: 初期登録 & 世代選択</div>
+                <div class="flow-arrow-alt">▼</div>
+                <div class="flow-step">フェーズ1: 「はじめの一歩」セッション</div>
+                <div class="flow-arrow-alt">▼</div>
+                <div class="flow-step">フェーズ2: 「価値観・想いとデジタル活用」深掘り</div>
+                <div class="flow-arrow-alt">▼</div>
+                <div class="flow-step">フェーズ3: 「具体的な備えと安心の継承」</div>
+                <div class="flow-arrow-alt">▼</div>
+                <div class="flow-step bg-sky-600 text-white">フェーズ4: パーソナライズド・ダッシュボード & 継続サポート</div>
+            </div>
+        </section>
+
+        <div>
+            <h2 class="generation-title parent-title">親世代のあなたへ：ご自身のこれからと想いを見つめる旅</h2>
+            <div class="grid md:grid-cols-1 lg:grid-cols-3 gap-6 mt-4 mb-12">
+                <div class="card-alt phase-card">
+                    <h3 class="sub-title-alt">フェーズ1：はじめの一歩</h3>
+                    <p class="text-sm text-gray-600 mb-3">終活への意識や将来の願い、今一番気がかりなことを明確にします。</p>
+                    <p class="font-semibold text-sm mb-1 text-gray-700">主な質問例：</p>
+                    <ul class="list-disc list-inside text-xs text-gray-600 mb-3 pl-4 space-y-1">
+                        <li>「終活」と聞いて何を感じますか？ (複数選択)</li>
+                        <li>これからどんな時間を過ごしたいですか？ (複数選択)</li>
+                    </ul>
+                    <p class="font-semibold text-sm mb-1 text-gray-700">得られるゲイン：</p>
+                    <div class="gain-item"><span class="gain-icon">💡</span>簡易診断で自分のタイプを把握</div>
+                    <div class="gain-item"><span class="gain-icon">📝</span>最初の気づきメモで思考を整理</div>
+                    <p class="text-xs text-gray-500 mt-3">→ 次は価値観の深掘りへ</p>
+                </div>
+
+                <div class="card-alt phase-card">
+                    <h3 class="sub-title-alt">フェーズ2：価値観・想いとデジタル活用</h3>
+                    <p class="text-sm text-gray-600 mb-3">人生で大切にしてきたこと、感謝の気持ちを具体化し、デジタル分身の可能性に触れます。</p>
+                    <p class="font-semibold text-sm mb-1 text-gray-700">主な質問例：</p>
+                    <ul class="list-disc list-inside text-xs text-gray-600 mb-3 pl-4 space-y-1">
+                        <li>最も大切にしてきた「言葉」や「教え」は？ (自由記述)</li>
+                        <li>デジタル分身に何を期待しますか？ (複数選択)</li>
+                    </ul>
+                    <p class="font-semibold text-sm mb-1 text-gray-700">得られるゲイン：</p>
+                    <div class="gain-item"><span class="gain-icon">💖</span>人生で輝く言葉たちを発見</div>
+                    <div class="gain-item"><span class="gain-icon">👤</span>デジタル分身のイメージを掴む</div>
+                    <p class="text-xs text-gray-500 mt-3">→ 次は具体的な備えの確認へ</p>
+                </div>
+
+                <div class="card-alt phase-card">
+                    <h3 class="sub-title-alt">フェーズ3：具体的な備えと安心の継承</h3>
+                    <p class="text-sm text-gray-600 mb-3">財産、医療・介護、葬儀等の希望を整理し、デジタル金庫やデジタル分身への情報登録を検討します。</p>
+                    <p class="font-semibold text-sm mb-1 text-gray-700">主な質問例：</p>
+                    <ul class="list-disc list-inside text-xs text-gray-600 mb-3 pl-4 space-y-1">
+                        <li>財産の整理状況は？ (選択式)</li>
+                        <li>医療や介護の希望はまとめていますか？ (複数選択)</li>
+                    </ul>
+                    <p class="font-semibold text-sm mb-1 text-gray-700">得られるゲイン：</p>
+                    <div class="gain-item"><span class="gain-icon">🗺️</span>安心継承プランの骨子作成</div>
+                    <div class="gain-item"><span class="gain-icon">🏦</span>デジタル金庫スタートパック</div>
+                    <div class="gain-item"><span class="gain-icon">🗣️</span>デジタル分身準備ガイド</div>
+                    <p class="text-xs text-gray-500 mt-3">→ パーソナライズド・ダッシュボードへ！</p>
+                </div>
+            </div>
+        </div>
+        
+        <div>
+            <h2 class="generation-title child-title">子世代のあなたへ：親御様への想いとこれからの備えを考える旅</h2>
+            <div class="grid md:grid-cols-1 lg:grid-cols-3 gap-6 mt-4 mb-16">
+                <div class="card-alt phase-card border-l-green-500">
+                    <h3 class="sub-title-alt text-green-700">フェーズ1：はじめの一歩</h3>
+                    <p class="text-sm text-gray-600 mb-3">親御様への願いや現状の認識、コミュニケーションの課題を把握します。</p>
+                    <p class="font-semibold text-sm mb-1 text-gray-700">主な質問例：</p>
+                    <ul class="list-disc list-inside text-xs text-gray-600 mb-3 pl-4 space-y-1">
+                        <li>親御様の「これから」に何を願いますか？ (自由記述)</li>
+                        <li>親御様と終活について話す難しさは？ (複数選択)</li>
+                    </ul>
+                    <p class="font-semibold text-sm mb-1 text-gray-700">得られるゲイン：</p>
+                    <div class="gain-item"><span class="gain-icon text-green-600">💡</span>あなたの親孝行タイプを診断</div>
+                    <div class="gain-item"><span class="gain-icon text-green-600">📝</span>現状認識の整理と気づき</div>
+                    <p class="text-xs text-gray-500 mt-3">→ 次は親御様の価値観理解へ</p>
+                </div>
+
+                <div class="card-alt phase-card border-l-green-500">
+                    <h3 class="sub-title-alt text-green-700">フェーズ2：価値観・想いとデジタル活用</h3>
+                    <p class="text-sm text-gray-600 mb-3">親御様の大切にしていることを理解し、デジタル金庫やデジタル分身を通じたサポートの可能性を探ります。</p>
+                    <p class="font-semibold text-sm mb-1 text-gray-700">主な質問例：</p>
+                    <ul class="list-disc list-inside text-xs text-gray-600 mb-3 pl-4 space-y-1">
+                        <li>親御様が大切にしてきた「言葉」は？ (自由記述)</li>
+                        <li>親御様の重要情報を家族で共有したいですか？ (複数選択)</li>
+                    </ul>
+                    <p class="font-semibold text-sm mb-1 text-gray-700">得られるゲイン：</p>
+                    <div class="gain-item"><span class="gain-icon text-green-600">🤝</span>親御様への理解度チェック</div>
+                    <div class="gain-item"><span class="gain-icon text-green-600">🔐</span>デジタル情報共有のメリット理解</div>
+                    <p class="text-xs text-gray-500 mt-3">→ 次は具体的なサポート準備へ</p>
+                </div>
+
+                <div class="card-alt phase-card border-l-green-500">
+                    <h3 class="sub-title-alt text-green-700">フェーズ3：具体的な備えと安心の継承</h3>
+                    <p class="text-sm text-gray-600 mb-3">親御様の財産や医療意向の把握度を確認し、デジタルツール活用サポートやコミュニケーション方法を考えます。</p>
+                    <p class="font-semibold text-sm mb-1 text-gray-700">主な質問例：</p>
+                    <ul class="list-disc list-inside text-xs text-gray-600 mb-3 pl-4 space-y-1">
+                        <li>親御様の財産状況の把握度は？ (選択式)</li>
+                        <li>親御様のデジタル分身作成をサポートしたい？ (選択式)</li>
+                    </ul>
+                    <p class="font-semibold text-sm mb-1 text-gray-700">得られるゲイン：</p>
+                    <div class="gain-item"><span class="gain-icon text-green-600">👨‍👩‍👧</span>親子で取り組む安心継承プラン提案</div>
+                    <div class="gain-item"><span class="gain-icon text-green-600">🗣️</span>親御様への伝え方ヒント集</div>
+                    <div class="gain-item"><span class="gain-icon text-green-600">🛠️</span>デジタルサポーター認定（簡易）</div>
+                    <p class="text-xs text-gray-500 mt-3">→ パーソナライズド・ダッシュボードへ！</p>
+                </div>
+            </div>
+        </div>
+
+        <section id="key-features" class="mb-16 py-10 bg-white rounded-xl shadow-xl">
+            <h2 class="section-title-alt">主要機能で、想いと情報を未来へ</h2>
+            <p class="text-center text-lg text-gray-700 mb-10 max-w-2xl mx-auto">オンボーディング後は、これらの強力な機能であなたの終活を具体的にサポートします。</p>
+            <div class="grid md:grid-cols-2 gap-8 px-4 md:px-10">
+                <div class="flex flex-col items-center text-center p-6 bg-sky-50 rounded-lg">
+                    <span class="icon-alt text-sky-600 mb-3">🏦</span>
+                    <h3 class="sub-title-alt text-sky-700">デジタル金庫サービス</h3>
+                    <p class="text-sm text-gray-600">資産情報、契約書類、ID/パスワード、大切な思い出のデータなどを安全に一元管理。指定した人にだけ、必要な時に情報を確実に引き継げます。</p>
+                </div>
+                <div class="flex flex-col items-center text-center p-6 bg-sky-50 rounded-lg">
+                    <span class="icon-alt text-sky-600 mb-3">👤</span>
+                    <h3 class="sub-title-alt text-sky-700">デジタル分身サービス</h3>
+                    <p class="text-sm text-gray-600">あなたの声や姿、そして大切な想いや人生の物語をAIアバターとして再現。万一の時も、あなたらしい形で家族と繋がり、メッセージを伝えられます。</p>
+                </div>
+            </div>
+        </section>
+
+        <section id="conclusion-alt" class="text-center py-10">
+            <h2 class="section-title-alt accent-color-alt">さあ、あなたらしい未来設計を始めましょう</h2>
+            <p class="text-lg text-gray-700 mb-6 max-w-3xl mx-auto">
+                終活は、終わりへの準備だけではありません。それは、今をより良く生き、大切な人への想いを形にし、そして自分らしいエンディングを迎えるための、創造的でポジティブな活動です。
+                このSaaSサービスが、あなたのその大切な一歩を、心強くサポートします。
+            </p>
+            <button class="bg-yellow-500 hover:bg-yellow-600 text-gray-800 font-bold py-3 px-8 rounded-lg shadow-lg transition-transform transform hover:scale-105">
+                今すぐ無料登録して体験する (イメージ)
+            </button>
+        </section>
+    </main>
+
+    <footer class="text-center py-6 bg-gray-800 text-gray-300 text-sm">
+        <p>&copy; 2025 SaaS型終活サービス. All rights reserved.</p>
+    </footer>
+
+</body>
+</html>
