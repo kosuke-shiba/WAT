@@ -1,0 +1,642 @@
+<!DOCTYPE html>
+<html lang="ja" class="scroll-smooth">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>VC向けピッチ資料：AI執事「Mirai Compass」</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.2/dist/chart.umd.min.js"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@400;500;700;900&display=swap" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Noto Sans JP', sans-serif;
+            background-color: #f8fafc;
+        }
+        .slide-container {
+            perspective: 1500px;
+        }
+        .slide {
+            display: none;
+            opacity: 0;
+            transition: all 0.6s ease-in-out;
+            position: absolute;
+            top: 0; left: 0; right: 0; bottom: 0;
+            padding: 2.5rem;
+            transform-style: preserve-3d;
+            backface-visibility: hidden;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+        }
+        @media (min-width: 768px) {
+            .slide { padding: 4rem; }
+        }
+        .slide.active {
+            display: flex;
+            opacity: 1;
+            transform: translateZ(0);
+        }
+        .slide.exit-forward { animation: exit-forward 0.6s forwards; }
+        .slide.exit-backward { animation: exit-backward 0.6s forwards; }
+        .slide.enter-forward { animation: enter-forward 0.6s forwards; }
+        .slide.enter-backward { animation: enter-backward 0.6s forwards; }
+
+        @keyframes enter-forward {
+            from { opacity: 0; transform: rotateY(-30deg) translateX(100%); }
+            to { opacity: 1; transform: rotateY(0) translateX(0); }
+        }
+        @keyframes exit-forward {
+            from { opacity: 1; transform: rotateY(0) translateX(0); }
+            to { opacity: 0; transform: rotateY(30deg) translateX(-100%); }
+        }
+        @keyframes enter-backward {
+            from { opacity: 0; transform: rotateY(30deg) translateX(-100%); }
+            to { opacity: 1; transform: rotateY(0) translateX(0); }
+        }
+        @keyframes exit-backward {
+            from { opacity: 1; transform: rotateY(0) translateX(0); }
+            to { opacity: 0; transform: rotateY(-30deg) translateX(100%); }
+        }
+
+        .infographic-box {
+            background-color: #ffffff;
+            border: 1px solid #e2e8f0;
+            border-radius: 0.75rem;
+            padding: 1.5rem;
+            height: 100%;
+        }
+        .infographic-icon {
+            font-size: 2.5rem;
+            margin-bottom: 1rem;
+        }
+        h1, h2, h3, h4 { font-weight: 700; }
+        .chapter-title {
+            position: absolute;
+            top: 1.5rem;
+            left: 2.5rem;
+            font-size: 0.875rem;
+            font-weight: 700;
+            color: #475569;
+        }
+        .page-number {
+            position: absolute;
+            bottom: 1.5rem;
+            right: 2.5rem;
+            font-size: 0.875rem;
+            color: #64748b;
+        }
+        .chart-container {
+            position: relative;
+            width: 100%;
+            height: 400px;
+        }
+    </style>
+</head>
+<body class="text-slate-800">
+    <div class="w-full max-w-6xl mx-auto py-8">
+        <div id="presentation-container" class="w-full h-[700px] bg-white rounded-2xl shadow-2xl flex flex-col relative overflow-hidden slide-container border border-gray-200">
+            
+            <div id="slides" class="flex-grow relative">
+
+                <div id="slide-1" class="slide active">
+                    <img src="https://placehold.co/150x150/0284C7/FFFFFF?text=MC&font=noto" alt="Mirai Compass Logo" class="mb-6 rounded-full">
+                    <h1 class="text-5xl md:text-6xl font-black text-sky-700">Mirai Compass</h1>
+                    <p class="mt-4 text-xl md:text-2xl text-slate-600">次世代ライフデザイン・プラットフォーム</p>
+                    <p class="mt-12 text-lg text-slate-500">2025年6月26日<br>株式会社Mirai Compass</p>
+                    <div class="page-number">1 / 17</div>
+                </div>
+
+                <div id="slide-2" class="slide">
+                    <div class="chapter-title">1. THE PROBLEM</div>
+                    <h2 class="text-4xl md:text-5xl font-black mb-8">終活を阻む、3つの巨大な壁</h2>
+                    <div class="w-full max-w-5xl grid md:grid-cols-3 gap-6">
+                         <div class="infographic-box shadow-lg">
+                            <i class="fas fa-layer-group infographic-icon text-yellow-500"></i>
+                            <h3 class="text-2xl mb-2">① 面倒の壁</h3>
+                            <p class="text-slate-600">紙、PDF、手書きメモ…<br>情報の整理と入力に心が折れる。</p>
+                        </div>
+                        <div class="infographic-box shadow-lg">
+                            <i class="fas fa-user-secret infographic-icon text-red-500"></i>
+                            <h3 class="text-2xl mb-2">② 不安の壁</h3>
+                            <p class="text-slate-600">情報漏洩、企業の倒産…<br>大切な情報を預けるのが怖い。</p>
+                        </div>
+                        <div class="infographic-box shadow-lg">
+                            <i class="fas fa-comment-slash infographic-icon text-gray-500"></i>
+                            <h3 class="text-2xl mb-2">③ 目的の壁</h3>
+                            <p class="text-slate-600">「死への準備」という重さ。<br>先延ばしにする最大の理由。</p>
+                        </div>
+                    </div>
+                    <div class="page-number">2 / 17</div>
+                </div>
+
+                <div id="slide-3" class="slide">
+                    <div class="chapter-title">2. OUR SOLUTION</div>
+                    <h2 class="text-4xl md:text-5xl font-black mb-6">AI執事が、すべての壁を壊します。</h2>
+                    <p class="text-lg text-slate-600 mb-8 max-w-3xl">我々は、終活を「面倒で不安な死への準備」から<br>「簡単で安全な、未来へのライフデザイン活動」へと再定義します。</p>
+                    <div class="infographic-box w-full max-w-5xl p-8 shadow-xl">
+                        <div class="flex flex-col md:flex-row items-center justify-around w-full">
+                            <div class="text-center">
+                                <i class="fas fa-file-invoice text-yellow-500 text-6xl"></i>
+                                <p class="mt-2 font-bold text-lg">面倒な情報</p>
+                            </div>
+                            <div class="text-6xl text-purple-500 my-4 md:my-0 md:mx-12 transform transition-transform hover:scale-125">
+                                <i class="fas fa-arrow-down md:hidden"></i><i class="fas fa-arrow-right hidden md:block"></i>
+                            </div>
+                            <div class="text-center">
+                                <i class="fas fa-magic-wand-sparkles text-purple-500 text-6xl"></i>
+                                <p class="mt-2 font-bold text-lg">AIが撮るだけで自動整理</p>
+                            </div>
+                            <div class="text-6xl text-teal-500 my-4 md:my-0 md:mx-12 transform transition-transform hover:scale-125">
+                                <i class="fas fa-arrow-down md:hidden"></i><i class="fas fa-arrow-right hidden md:block"></i>
+                            </div>
+                            <div class="text-center">
+                                <i class="fas fa-shield-halved text-teal-500 text-6xl"></i>
+                                <p class="mt-2 font-bold text-lg">あなただけのデジタル金庫へ</p>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="page-number">3 / 17</div>
+                </div>
+
+                <div id="slide-4" class="slide">
+                    <div class="chapter-title">3. HOW IT WORKS</div>
+                     <h2 class="text-4xl md:text-5xl font-black mb-6">ステップ1: AIで「面倒」を解消</h2>
+                     <p class="text-lg text-slate-600 mb-8 max-w-3xl">行動科学に基づいたUXと最先端AIで、最も高いハードルである「情報入力」を楽しく、簡単な体験に変えます。</p>
+                     <div class="w-full max-w-5xl grid md:grid-cols-3 gap-6">
+                        <div class="infographic-box">
+                           <i class="fas fa-camera-retro infographic-icon text-sky-600"></i>
+                           <h3 class="text-xl font-bold mb-2">撮るだけ入力</h3>
+                           <p>スマホで撮るだけで、AI-OCRが紙の書類を高精度でデータ化します。</p>
+                        </div>
+                        <div class="infographic-box">
+                           <i class="fas fa-brain infographic-icon text-sky-600"></i>
+                           <h3 class="text-xl font-bold mb-2">自動で分類・要約</h3>
+                           <p>マルチモーダルAIが内容を理解し、「保険」「不動産」などに自動で整理・要約します。</p>
+                        </div>
+                        <div class="infographic-box">
+                           <i class="fas fa-microchip infographic-icon text-sky-600"></i>
+                           <h3 class="text-xl font-bold mb-2">プライバシー保護</h3>
+                           <p>全てのAI処理はあなたのスマホ上で完結。データが外部に漏れる心配はありません。</p>
+                        </div>
+                     </div>
+                    <div class="page-number">4 / 17</div>
+                </div>
+
+                <div id="slide-5" class="slide">
+                    <div class="chapter-title">3. HOW IT WORKS</div>
+                    <h2 class="text-4xl md:text-5xl font-black mb-6">ステップ2: 独自技術で「絶対的な安心」を</h2>
+                    <p class="text-lg text-slate-600 mb-8 max-w-3xl">我々は、データを企業に預ける常識を覆します。<br/>この3つの独自技術で、あなたのデータ主権を守ります。</p>
+                     <div class="w-full max-w-5xl grid grid-cols-1 md:grid-cols-3 gap-6">
+                         <div class="infographic-box">
+                            <i class="fas fa-cube infographic-icon text-sky-700"></i>
+                            <h3 class="text-xl font-bold mb-2">PDS/Solid</h3>
+                            <p class="text-slate-600">データの「永続的な住処」。企業に依存せず、あなたのデータはあなたのもの。</p>
+                        </div>
+                        <div class="infographic-box">
+                            <i class="fas fa-user-shield infographic-icon text-green-600"></i>
+                            <h3 class="text-xl font-bold mb-2">SSI</h3>
+                            <p class="text-slate-600">データの「厳格な門番」。誰に何を見せるかを、あなただけが決定。</p>
+                        </div>
+                         <div class="infographic-box">
+                            <i class="fas fa-shield-halved infographic-icon text-teal-600"></i>
+                            <h3 class="text-xl font-bold mb-2">FHE</h3>
+                            <p class="text-slate-600">データの「究極の金庫」。AIですら中身を見ずに、安全に処理を実行。</p>
+                        </div>
+                    </div>
+                    <div class="page-number">5 / 17</div>
+                </div>
+                
+                <div id="slide-6" class="slide">
+                    <div class="chapter-title">3. HOW IT WORKS</div>
+                    <h2 class="text-4xl md:text-5xl font-black mb-6">ステップ3: 包括的機能で「目的」を創出</h2>
+                    <p class="text-lg text-slate-600 mb-8 max-w-3xl">「死後」だけでなく「今をより良く生きる」ための具体的な価値を提供します。</p>
+                     <div class="w-full max-w-5xl grid grid-cols-1 md:grid-cols-3 gap-6">
+                         <div class="infographic-box">
+                            <i class="fas fa-heart-pulse infographic-icon text-red-500"></i>
+                            <h3 class="text-xl font-bold mb-2">リビング・ウィル</h3>
+                            <p class="text-slate-600">万が一の時の医療や介護の希望を記し、「今の意思」を未来へ届けます。</p>
+                        </div>
+                        <div class="infographic-box">
+                            <i class="fas fa-file-signature infographic-icon text-blue-500"></i>
+                            <h3 class="text-xl font-bold mb-2">遺言書サポート</h3>
+                            <p class="text-slate-600">AIが法的に有効な遺言書のドラフト作成から保管までをナビゲートします。</p>
+                        </div>
+                         <div class="infographic-box">
+                            <i class="fas fa-people-arrows infographic-icon text-green-500"></i>
+                            <h3 class="text-xl font-bold mb-2">遺産分割ナビ</h3>
+                            <p class="text-slate-600">遺言がない場合も、AIが円滑な遺産分割協議を中立的にサポートします。</p>
+                        </div>
+                    </div>
+                    <div class="page-number">6 / 17</div>
+                </div>
+
+                <div id="slide-7" class="slide">
+                    <div class="chapter-title">4. PRODUCT</div>
+                    <h2 class="text-4xl md:text-5xl font-black mb-8">シンプルで、誰にでも優しいUI/UX</h2>
+                    <div class="w-full max-w-5xl flex items-center justify-center gap-4">
+                        <div class="w-1/4 flex flex-col items-center">
+                           <div class="infographic-box shadow-md p-4 w-full">
+                                <h4 class="font-bold text-sky-700">AIインポート</h4>
+                                <i class="fas fa-camera text-4xl my-4 text-purple-500"></i>
+                                <p class="text-sm text-slate-500">保険証券を撮影</p>
+                                <i class="fas fa-file-lines my-2 text-3xl text-slate-400"></i>
+                           </div>
+                           <i class="fas fa-long-arrow-alt-right text-4xl text-slate-400 my-4 -rotate-45"></i>
+                        </div>
+                        
+                        <div class="w-1/2 infographic-box shadow-2xl p-6 border-2 border-sky-600">
+                             <h3 class="text-2xl font-bold text-sky-700 mb-4">マイ・ダッシュボード</h3>
+                             <div class="space-y-3 w-full text-left">
+                                <div class="p-3 bg-slate-100 rounded-lg flex items-center justify-between"><span><i class="fas fa-shield-halved text-teal-500 mr-3"></i>資産総額</span><span class="font-bold">¥ ●●,●●●,●●●</span></div>
+                                <div class="p-3 bg-slate-100 rounded-lg flex items-center justify-between"><span><i class="fas fa-file-medical text-yellow-500 mr-3"></i>保険</span><span class="font-bold">3件 <i class="fas fa-chevron-right text-xs"></i></span></div>
+                                <div class="p-3 bg-slate-100 rounded-lg flex items-center justify-between"><span><i class="fas fa-book-open text-purple-500 mr-3"></i>ライフストーリー</span><span class="font-bold">75% <i class="fas fa-chevron-right text-xs"></i></span></div>
+                                <div class="p-3 bg-slate-100 rounded-lg flex items-center justify-between"><span><i class="fas fa-users text-green-500 mr-3"></i>家族への共有</span><span class="font-bold">2名 <i class="fas fa-chevron-right text-xs"></i></span></div>
+                             </div>
+                        </div>
+
+                         <div class="w-1/4 flex flex-col items-center">
+                            <i class="fas fa-long-arrow-alt-left text-4xl text-slate-400 my-4 -rotate-45"></i>
+                            <div class="infographic-box shadow-md p-4 w-full">
+                                <h4 class="font-bold text-sky-700">ライフストーリー</h4>
+                                <i class="fas fa-book-open text-4xl my-4 text-purple-500"></i>
+                                <p class="text-sm text-slate-500">思い出を記録</p>
+                                <i class="fas fa-image my-2 text-3xl text-slate-400"></i>
+                           </div>
+                        </div>
+                    </div>
+                    <div class="page-number">7 / 17</div>
+                </div>
+                
+                <div id="slide-8" class="slide">
+                    <div class="chapter-title">5. TARGET & PERSONA</div>
+                    <h2 class="text-4xl md:text-5xl font-black mb-8">ターゲットは「個人」と「関係性」</h2>
+                    <p class="text-lg text-slate-600 mb-8 max-w-3xl">まず「個人のための完璧なツール」であること。その上で、必要に応じて家族を巻き込める柔軟性を持ちます。</p>
+                    <div class="w-full max-w-5xl grid md:grid-cols-2 gap-8">
+                         <div class="infographic-box">
+                            <i class="fas fa-user infographic-icon text-sky-600"></i>
+                            <h3 class="text-2xl mb-2">ペルソナA: 立案者</h3>
+                            <p class="text-slate-600">自らの意思で未来をデザインしたい個人（年齢不問）。おひとり様も含む。</p>
+                        </div>
+                        <div class="infographic-box">
+                            <i class="fas fa-users infographic-icon text-purple-600"></i>
+                            <h3 class="text-2xl mb-2">ペルソナB: 支援者</h3>
+                            <p class="text-slate-600">親を案じる40-50代の子世代。親の導入をサポートし、未来の不安を解消したい。</p>
+                        </div>
+                    </div>
+                    <div class="page-number">8 / 17</div>
+                </div>
+
+                <div id="slide-9" class="slide">
+                    <div class="chapter-title">6. MARKET SIZE</div>
+                     <h2 class="text-4xl md:text-5xl font-black mb-8">数十兆円の巨大市場がターゲット</h2>
+                     <p class="text-lg text-slate-600 mb-10 max-w-3xl">我々が狙うのは、限定的な「終活」市場ではありません。<br/>その先に広がる、より普遍的な「個人のデジタル資産管理・継承」市場です。</p>
+                     <div class="w-full max-w-3xl">
+                        <div class="chart-container"><canvas id="marketChart"></canvas></div>
+                     </div>
+                    <div class="page-number">9 / 17</div>
+                </div>
+
+                <div id="slide-10" class="slide">
+                     <div class="chapter-title">7. BUSINESS MODEL</div>
+                     <h2 class="text-4xl md:text-5xl font-black mb-8">拡張性の高い収益モデル</h2>
+                     <div class="w-full max-w-5xl grid md:grid-cols-2 gap-8">
+                         <div class="infographic-box">
+                            <i class="fas fa-user-friends infographic-icon text-sky-600"></i>
+                            <h3 class="text-2xl font-bold mb-2">Freemium</h3>
+                            <p class="text-slate-600">無料プランで「面倒の解消」という強力な価値を提供し、ユーザーを獲得。プレミアムプラン（月額980円〜）で収益化します。</p>
+                        </div>
+                        <div class="infographic-box">
+                            <i class="fas fa-handshake infographic-icon text-purple-600"></i>
+                            <h3 class="text-2xl font-bold mb-2">B2B2C</h3>
+                            <p class="text-slate-600">金融機関、士業、介護事業者等と提携し、顧客への付加価値として提供。顧客基盤を爆発的に拡大させます。</p>
+                        </div>
+                    </div>
+                    <div class="page-number">10 / 17</div>
+                </div>
+                
+                <div id="slide-11" class="slide">
+                    <div class="chapter-title">8. GO-TO-MARKET</div>
+                     <h2 class="text-4xl md:text-5xl font-black mb-8">市場投入戦略</h2>
+                     <div class="w-full max-w-5xl flex flex-col items-center">
+                        <div class="flex items-center space-x-4">
+                            <div class="text-center p-4 bg-sky-100 rounded-full">
+                                <h3 class="text-lg font-bold">Phase 1</h3>
+                                <p>子世代＆個人への訴求</p>
+                            </div>
+                            <i class="fas fa-arrow-right text-3xl text-slate-400"></i>
+                            <div class="text-center p-4 bg-sky-100 rounded-full">
+                                <h3 class="text-lg font-bold">Phase 2</h3>
+                                <p>B2B2Cでの信頼獲得</p>
+                            </div>
+                            <i class="fas fa-arrow-right text-3xl text-slate-400"></i>
+                            <div class="text-center p-4 bg-sky-100 rounded-full">
+                                <h3 class="text-lg font-bold">Phase 3</h3>
+                                <p>プラットフォーム化</p>
+                            </div>
+                        </div>
+                        <div class="mt-8 w-full grid md:grid-cols-3 gap-6">
+                            <p>「新しい親孝行」として子世代に、また「自分の人生をコントロールするツール」として個人に直接アプローチします。</p>
+                            <p>金融機関・士業との提携を推進。特に「データを預からない」モデルは、セキュリティに厳しい金融機関に強く響きます。</p>
+                            <p>APIを公開し、保険や不動産などの外部サービスと連携。生活に不可欠な信頼のインフラを目指します。</p>
+                        </div>
+                     </div>
+                    <div class="page-number">11 / 17</div>
+                </div>
+                
+                <div id="slide-12" class="slide">
+                    <div class="chapter-title">9. COMPETITION</div>
+                    <h2 class="text-4xl md:text-5xl font-black mb-6">競合不在のポジション</h2>
+                    <p class="text-lg text-slate-600 mb-6 max-w-3xl">競合は「手軽さ」か「安全性」のどちらかしか解決できていません。<br>我々は、その両方を高次元で両立する唯一のプレイヤーです。</p>
+                    <div class="w-full max-w-3xl">
+                        <div class="chart-container" style="height: 500px;"><canvas id="competitionChart"></canvas></div>
+                    </div>
+                    <div class="page-number">12 / 17</div>
+                </div>
+
+                <div id="slide-13" class="slide">
+                    <div class="chapter-title">10. OUR MOAT</div>
+                    <h2 class="text-4xl md:text-5xl font-black mb-8">我々の防御可能な優位性</h2>
+                    <div class="w-full max-w-5xl grid md:grid-cols-2 lg:grid-cols-4 gap-6">
+                        <div class="infographic-box">
+                           <i class="fas fa-fingerprint infographic-icon text-sky-600"></i>
+                           <h3 class="text-xl font-bold mb-2">独自アーキテクチャ</h3>
+                           <p>模倣困難な分散型技術の統合。</p>
+                        </div>
+                        <div class="infographic-box">
+                           <i class="fas fa-microscope infographic-icon text-sky-600"></i>
+                           <h3 class="text-xl font-bold mb-2">ローカルファーストAI</h3>
+                           <p>プライバシーとUXを両立するエッジAI処理。</p>
+                        </div>
+                        <div class="infographic-box">
+                           <i class="fas fa-file-signature infographic-icon text-sky-600"></i>
+                           <h3 class="text-xl font-bold mb-2">特許ポートフォリオ</h3>
+                           <p>システム全体を法的に保護。</p>
+                        </div>
+                        <div class="infographic-box">
+                           <i class="fas fa-project-diagram infographic-icon text-sky-600"></i>
+                           <h3 class="text-xl font-bold mb-2">ネットワーク効果</h3>
+                           <p>家族・専門家との連携による高いスイッチングコスト。</p>
+                        </div>
+                     </div>
+                     <div class="page-number">13 / 17</div>
+                </div>
+
+                <div id="slide-14" class="slide">
+                    <div class="chapter-title">11. ROADMAP</div>
+                    <h2 class="text-4xl md:text-5xl font-black mb-10">マイルストーン</h2>
+                    <div class="w-full max-w-5xl">
+                       <div class="relative border-l-4 border-sky-200 ml-4">
+                           <div class="mb-12 ml-8">
+                               <div class="absolute -left-[1.1rem] mt-2 w-8 h-8 bg-sky-600 rounded-full border-4 border-white"></div>
+                               <h3 class="text-xl font-bold text-sky-700">Phase 1 (〜6ヶ月)</h3>
+                               <p class="text-slate-600">「手軽さ」と「生前の価値」検証：AI-OCRとリビング・ウィル機能を搭載したMVPをリリース</p>
+                           </div>
+                           <div class="mb-12 ml-8">
+                               <div class="absolute -left-[1.1rem] mt-2 w-8 h-8 bg-sky-600 rounded-full border-4 border-white"></div>
+                               <h3 class="text-xl font-bold text-sky-700">Phase 2 (〜12ヶ月)</h3>
+                               <p class="text-slate-600">「安心」の価値検証と継承機能：Solid Podへの移行と遺言書サポート機能の実装</p>
+                           </div>
+                           <div class="ml-8">
+                               <div class="absolute -left-[1.1rem] mt-2 w-8 h-8 bg-sky-600 rounded-full border-4 border-white"></div>
+                               <h3 class="text-xl font-bold text-sky-700">Phase 3 (〜24ヶ月)</h3>
+                               <p class="text-slate-600">技術的優位性の確立：FHE統合、遺産分割ナビ機能、B2B2C展開</p>
+                           </div>
+                       </div>
+                    </div>
+                    <div class="page-number">14 / 17</div>
+                </div>
+
+                <div id="slide-15" class="slide">
+                    <div class="chapter-title">12. THE TEAM</div>
+                    <h2 class="text-4xl md:text-5xl font-black mb-8">この未来を実現するチーム</h2>
+                    <p class="text-lg text-slate-600 mb-10 max-w-3xl">ビジネス、ディープテック、人間中心設計のトップタレントを結集します。</p>
+                    <div class="w-full max-w-4xl grid md:grid-cols-3 gap-8">
+                        <div class="text-center">
+                            <img src="https://placehold.co/150x150/0284C7/FFFFFF?text=CEO&font=noto" class="w-32 h-32 mx-auto rounded-full mb-4 border-4 border-white shadow-lg">
+                            <h3 class="text-xl font-bold">CEO (貴殿)</h3>
+                            <p class="text-sky-700 font-semibold">戦略・ビジョン</p>
+                        </div>
+                        <div class="text-center">
+                            <img src="https://placehold.co/150x150/059669/FFFFFF?text=CTO&font=noto" class="w-32 h-32 mx-auto rounded-full mb-4 border-4 border-white shadow-lg">
+                            <h3 class="text-xl font-bold">CTO</h3>
+                            <p class="text-green-700 font-semibold">技術・アーキテクチャ</p>
+                        </div>
+                        <div class="text-center">
+                            <img src="https://placehold.co/150x150/A21CAF/FFFFFF?text=CPO&font=noto" class="w-32 h-32 mx-auto rounded-full mb-4 border-4 border-white shadow-lg">
+                            <h3 class="text-xl font-bold">CPO</h3>
+                            <p class="text-fuchsia-700 font-semibold">製品・UX</p>
+                        </div>
+                    </div>
+                     <div class="page-number">15 / 17</div>
+                </div>
+
+                <div id="slide-16" class="slide">
+                    <div class="chapter-title">13. THE ASK</div>
+                    <h2 class="text-4xl md:text-5xl font-black mb-8">資金調達計画</h2>
+                     <div class="w-full max-w-4xl flex flex-col md:flex-row items-center justify-around gap-8">
+                        <div class="text-center">
+                            <h3 class="text-2xl font-bold text-sky-700">プレシードラウンド</h3>
+                            <p class="text-6xl font-black my-2">2,000万円</p>
+                            <p class="text-slate-500">（時価総額1億円 / 12ヶ月分）</p>
+                        </div>
+                        <div class="infographic-box max-w-md shadow-lg">
+                             <h3 class="text-2xl font-bold mb-4">達成目標</h3>
+                             <ul class="text-left text-lg space-y-2 text-slate-600">
+                                <li><i class="fas fa-check-circle text-green-500 mr-2"></i>価値の証明 (MVPリリース)</li>
+                                <li><i class="fas fa-check-circle text-green-500 mr-2"></i>技術の証明 (独自技術デモ)</li>
+                                <li><i class="fas fa-check-circle text-green-500 mr-2"></i>市場性の証明 (金融機関とのLOI)</li>
+                             </ul>
+                        </div>
+                    </div>
+                    <p class="mt-8 text-xl text-slate-700">この資金で仮説を証明し、次なる1億円規模のシードラウンドへ繋げます。</p>
+                    <div class="page-number">16 / 17</div>
+                </div>
+
+                 <div id="slide-17" class="slide">
+                    <i class="fas fa-compass-drafting text-8xl text-sky-600 mb-8"></i>
+                    <h2 class="text-4xl md:text-5xl font-black mb-6">個人の尊厳が、<br/>テクノロジーで守られる未来へ。</h2>
+                    <p class="mt-4 text-xl md:text-2xl text-slate-600">ご清聴ありがとうございました。</p>
+                    <div class="page-number">17 / 17</div>
+                </div>
+
+            </div>
+
+            <!-- Navigation -->
+            <div class="absolute bottom-0 left-0 right-0 p-4 bg-white/80 backdrop-blur-sm border-t border-gray-200 flex items-center justify-between z-10">
+                <button id="prev-btn" class="px-4 py-2 bg-slate-200 text-slate-700 rounded-lg hover:bg-slate-300 disabled:opacity-50 disabled:cursor-not-allowed transition-colors">
+                    <i class="fas fa-arrow-left"></i>
+                </button>
+                <div id="pagination" class="flex items-center justify-center gap-2">
+                </div>
+                <button id="next-btn" class="px-4 py-2 bg-slate-200 text-slate-700 rounded-lg hover:bg-slate-300 disabled:opacity-50 disabled:cursor-not-allowed transition-colors">
+                    <i class="fas fa-arrow-right"></i>
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const slides = Array.from(document.querySelectorAll('.slide'));
+            const prevBtn = document.getElementById('prev-btn');
+            const nextBtn = document.getElementById('next-btn');
+            const paginationContainer = document.getElementById('pagination');
+            let currentSlide = 0;
+
+            if (slides.length === 0) return;
+
+            const tooltipTitleCallback = (tooltipItems) => {
+                const item = tooltipItems[0];
+                let label = item.chart.data.labels[item.dataIndex];
+                if (Array.isArray(label)) {
+                    return label.join(' ');
+                }
+                return label;
+            };
+
+            const marketChartCtx = document.getElementById('marketChart');
+            if (marketChartCtx) {
+                new Chart(marketChartCtx, {
+                    type: 'doughnut',
+                    data: {
+                        labels: ['初期獲得可能市場 (SOM: 100億円)', 'サービス可能市場 (SAM: 数兆円)', '獲得可能総市場 (TAM: 数十兆円)'],
+                        datasets: [{
+                            label: '市場規模',
+                            data: [100, 20000, 100000],
+                            backgroundColor: ['#0369a1', '#0ea5e9', '#7dd3fc'],
+                            borderColor: '#ffffff',
+                            borderWidth: 4
+                        }]
+                    },
+                    options: {
+                        responsive: true,
+                        maintainAspectRatio: false,
+                        plugins: {
+                            legend: { position: 'bottom', labels: { font: { size: 14 }}},
+                            tooltip: { callbacks: { title: tooltipTitleCallback } },
+                            title: { display: true, text: 'ターゲット市場規模', font: { size: 18, weight: 'bold' }, padding: { top: 10, bottom: 20 }}
+                        }
+                    }
+                });
+            }
+
+            const competitionChartCtx = document.getElementById('competitionChart');
+            if(competitionChartCtx) {
+                 new Chart(competitionChartCtx, {
+                    type: 'scatter',
+                    data: {
+                        datasets: [
+                            {
+                                label: 'Mirai Compass',
+                                data: [{x: 9, y: 9}],
+                                backgroundColor: '#dc2626',
+                                pointRadius: 15,
+                                pointHoverRadius: 20,
+                            },
+                            {
+                                label: 'エンディングノートアプリ',
+                                data: [{x: 7, y: 2}],
+                                backgroundColor: '#f97316',
+                                pointRadius: 10,
+                                pointHoverRadius: 15,
+                            },
+                            {
+                                label: 'デジタル資産管理サービス',
+                                data: [{x: 4, y: 4}],
+                                backgroundColor: '#16a34a',
+                                pointRadius: 10,
+                                pointHoverRadius: 15,
+                            },
+                            {
+                                label: '専門家サービス(信託銀行等)',
+                                data: [{x: 2, y: 8}],
+                                backgroundColor: '#9333ea',
+                                pointRadius: 10,
+                                pointHoverRadius: 15,
+                            }
+                        ]
+                    },
+                    options: {
+                        responsive: true,
+                        maintainAspectRatio: false,
+                        plugins: {
+                            legend: { position: 'bottom', labels: { usePointStyle: true } },
+                            tooltip: { callbacks: { label: (context) => context.dataset.label }},
+                            title: { display: false }
+                        },
+                        scales: {
+                            x: {
+                                min: 0, max: 10,
+                                title: { display: true, text: '手軽さ (AI自動入力 →)', font: { size: 14, weight: 'bold' }}
+                            },
+                            y: {
+                                min: 0, max: 10,
+                                title: { display: true, text: '安全性 (ユーザー主権 →)', font: { size: 14, weight: 'bold' }}
+                            }
+                        }
+                    }
+                });
+            }
+
+            slides.forEach((_, index) => {
+                const dot = document.createElement('button');
+                dot.classList.add('w-2.5', 'h-2.5', 'rounded-full', 'bg-slate-300', 'hover:bg-sky-500', 'transition-colors');
+                dot.setAttribute('aria-label', `Go to slide ${index + 1}`);
+                dot.addEventListener('click', () => {
+                    const direction = index > currentSlide ? 'forward' : 'backward';
+                    goToSlide(index, direction);
+                });
+                paginationContainer.appendChild(dot);
+            });
+            const paginationDots = paginationContainer.querySelectorAll('button');
+
+            function goToSlide(slideIndex, direction) {
+                const oldSlideIndex = currentSlide;
+                if (slideIndex === oldSlideIndex || slideIndex < 0 || slideIndex >= slides.length) return;
+                
+                const oldSlide = slides[oldSlideIndex];
+                const newSlide = slides[slideIndex];
+                
+                direction = direction || (slideIndex > oldSlideIndex ? 'forward' : 'backward');
+
+                slides.forEach(s => s.className = 'slide');
+
+                oldSlide.classList.add(direction === 'forward' ? 'exit-forward' : 'exit-backward');
+                newSlide.classList.add('active', direction === 'forward' ? 'enter-forward' : 'enter-backward');
+                
+                currentSlide = slideIndex;
+                
+                updatePagination();
+                updateNavButtons();
+            }
+            
+            function updatePagination() {
+                paginationDots.forEach((dot, index) => {
+                    dot.classList.toggle('bg-sky-600', index === currentSlide);
+                    dot.classList.toggle('bg-slate-300', index !== currentSlide);
+                });
+            }
+
+            function updateNavButtons() {
+                prevBtn.disabled = currentSlide === 0;
+                nextBtn.disabled = currentSlide === slides.length - 1;
+            }
+
+            prevBtn.addEventListener('click', () => goToSlide(currentSlide - 1, 'backward'));
+            nextBtn.addEventListener('click', () => goToSlide(currentSlide + 1, 'forward'));
+            
+            document.addEventListener('keydown', (e) => {
+                if (e.key === 'ArrowRight' || e.key === 'ArrowDown') nextBtn.click();
+                if (e.key === 'ArrowLeft' || e.key === 'ArrowUp') prevBtn.click();
+            });
+            
+            updatePagination();
+            updateNavButtons();
+        });
+    </script>
+</body>
+</html>

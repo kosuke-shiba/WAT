@@ -1,0 +1,153 @@
+<!DOCTYPE html>
+<html lang="ja" class="scroll-smooth">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Mirai Compass 広告訴求案インフォグラフィック</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@400;500;700;900&display=swap" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Noto Sans JP', sans-serif;
+            background-color: #f8fafc;
+        }
+        .section-title {
+            font-size: 2.5rem;
+            font-weight: 900;
+            line-height: 1.2;
+            color: #0c4a6e;
+        }
+        @media (min-width: 768px) {
+            .section-title { font-size: 3.5rem; }
+        }
+        .card {
+            background-color: white;
+            border-radius: 1rem;
+            padding: 2rem;
+            box-shadow: 0 10px 15px -3px rgb(0 0 0 / 0.05), 0 4px 6px -4px rgb(0 0 0 / 0.05);
+            border: 1px solid #e2e8f0;
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+            height: 100%;
+        }
+        .card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 20px 25px -5px rgb(0 0 0 / 0.1), 0 8px 10px -6px rgb(0 0 0 / 0.1);
+        }
+        .fade-in {
+            opacity: 0;
+            transform: translateY(20px);
+            transition: opacity 0.6s ease-out, transform 0.6s ease-out;
+        }
+        .fade-in.visible {
+            opacity: 1;
+            transform: translateY(0);
+        }
+        .copy-item {
+            position: relative;
+            padding-left: 1.75rem;
+            margin-bottom: 1rem;
+        }
+        .copy-item::before {
+            content: '\f10d'; 
+            font-family: 'Font Awesome 6 Free';
+            font-weight: 900;
+            position: absolute;
+            left: 0;
+            top: 0.125rem;
+            color: #38bdf8;
+        }
+    </style>
+</head>
+<body class="bg-slate-50 text-slate-800">
+
+    <main class="container mx-auto px-4 py-16 md:py-24 space-y-24 md:space-y-32">
+
+        <header class="text-center fade-in">
+            <h1 class="text-5xl md:text-7xl font-black text-sky-800">Mirai Compass</h1>
+            <p class="mt-4 text-xl md:text-2xl text-slate-600">広告訴求メッセージ案</p>
+        </header>
+
+        <section class="fade-in">
+            <div class="text-center">
+                <i class="fas fa-bullseye text-5xl text-sky-700"></i>
+                <h2 class="section-title mt-4">親世代「立案者」向け訴求案</h2>
+                <p class="mt-4 text-lg text-slate-600 max-w-2xl mx-auto">「人生の集大成」としてのプライドと、未来への主体的な意志に語りかけます。</p>
+            </div>
+            <div class="mt-12 grid md:grid-cols-3 gap-8">
+                <div class="card fade-in">
+                    <h3 class="text-xl font-bold mb-4 border-b-2 border-sky-600 pb-2">切り口１：人生の集大成</h3>
+                    <div class="text-left text-slate-700 mt-6">
+                        <div class="copy-item">息子が『親父は最後まで格好良かった』と語る、そんな”最後の事業”を始めませんか？</div>
+                        <div class="copy-item">人生100年時代。その集大成は、守りの『終活』ではなく、未来を創る攻めの『継承戦略』です。</div>
+                        <div class="copy-item">あなたの人生は、一冊の本になる。その最終章、最高の形で締めくくりませんか？</div>
+                    </div>
+                </div>
+                <div class="card fade-in" style="transition-delay: 100ms;">
+                    <h3 class="text-xl font-bold mb-4 border-b-2 border-sky-600 pb-2">切り口２：新しい時代の備え</h3>
+                    <div class="text-left text-slate-700 mt-6">
+                        <div class="copy-item">税理士、弁護士、銀行… 大切な情報は、なぜバラバラなのですか？ 我々はそのすべてを、AIで一つに繋ぎます。</div>
+                        <div class="copy-item">スマホの中にある『デジタル資産』、見過ごしていませんか？ 従来の専門家が見過ごしがちな領域に、テクノロジーで光を当てます。</div>
+                    </div>
+                </div>
+                <div class="card fade-in" style="transition-delay: 200ms;">
+                     <h3 class="text-xl font-bold mb-4 border-b-2 border-sky-600 pb-2">切り口３：テクノロジーの可能性</h3>
+                    <div class="text-left text-slate-700 mt-6">
+                        <div class="copy-item">あなたの財産と想いを、ブロックチェーンに刻む。改ざん不可能な”デジタル金庫”が、家族の未来を守ります。</div>
+                        <div class="copy-item">テクノロジーの専門家チームが創る、相続の未来。金融機関も法律家も語れない、AIだからできる『絶対的な安心』があります。</div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section class="fade-in">
+            <div class="text-center">
+                 <i class="fas fa-users text-5xl text-purple-700"></i>
+                <h2 class="section-title mt-4 text-purple-800">子世代「支援者」向け訴求案</h2>
+                <p class="mt-4 text-lg text-slate-600 max-w-2xl mx-auto">親を想う気持ちに寄り添い、「後悔ゼロの未来」と「スマートな親孝行」を提案します。</p>
+            </div>
+            <div class="mt-12 grid md:grid-cols-3 gap-8">
+                <div class="card fade-in">
+                    <h3 class="text-xl font-bold mb-4 border-b-2 border-purple-600 pb-2">切り口１：後悔ゼロの未来</h3>
+                    <div class="text-left text-slate-700 mt-6">
+                        <div class="copy-item" style="--fa-color: #c084fc;">あなたの最大の遺産は、資産ではなく『争わない家族』です。その未来、今から準備しませんか？</div>
+                        <div class="copy-item" style="--fa-color: #c084fc;">「あの時、親の本当の気持ちを聞いておけば…」その“万が一”の後悔を、テクノロジーでゼロにする。</div>
+                        <div class="copy-item" style="--fa-color: #c084fc;">親が倒れた時、あなたは決められますか？医療、介護…その重すぎる決断を、親の『元気なうちの意思』が救います。</div>
+                    </div>
+                </div>
+                <div class="card fade-in" style="transition-delay: 100ms;">
+                    <h3 class="text-xl font-bold mb-4 border-b-2 border-purple-600 pb-2">切り口２：スマートな親孝行</h3>
+                    <div class="text-left text-slate-700 mt-6">
+                        <div class="copy-item" style="--fa-color: #c084fc;">親の終活、どう切り出す？ Mirai Compassが“きっかけ”を創ります。</div>
+                        <div class="copy-item" style="--fa-color: #c084fc;">親孝行も、スマートに。離れていても、実家の書類整理を手伝える時代です。</div>
+                        <div class="copy-item" style="--fa-color: #c084fc;">財産の話はしにくい。だから『人生で一番楽しかった旅行の話』から始めませんか？</div>
+                    </div>
+                </div>
+                <div class="card fade-in" style="transition-delay: 200ms;">
+                     <h3 class="text-xl font-bold mb-4 border-b-2 border-purple-600 pb-2">切り口３：課題解決ツール</h3>
+                     <div class="text-left text-slate-700 mt-6">
+                        <div class="copy-item" style="--fa-color: #c084fc;">相続手続き、弁護士に頼むその前に。AIが情報整理を代行し、あなたの時間と家族の心の負担を減らします。</div>
+                        <div class="copy-item" style="--fa-color: #c084fc;">親と、お金と、未来の話。AIという中立な第三者がいれば、もっとスムーズに話せるはずです。</div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+    </main>
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const FADE_IN_ELEMENTS = document.querySelectorAll('.fade-in');
+            const observer = new IntersectionObserver((entries) => {
+                entries.forEach(entry => {
+                    if (entry.isIntersecting) {
+                        entry.target.classList.add('visible');
+                    }
+                });
+            }, { threshold: 0.1 });
+            FADE_IN_ELEMENTS.forEach(el => observer.observe(el));
+        });
+    </script>
+</body>
+</html>

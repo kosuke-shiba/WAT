@@ -1,0 +1,637 @@
+<!DOCTYPE html>
+<html lang="ja" class="scroll-smooth">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Mirai Compass: ウェルネス統合戦略 インタラクティブ・レポート (v2)</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chartjs-adapter-date-fns"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@300;400;500;700&display=swap" rel="stylesheet">
+    <!-- Chosen Palette: Future Green (Dark Theme) -->
+    <!-- Application Structure Plan: このSPAは、高密度な戦略レポートを消化しやすくするために、ダッシュボード風の複数セクションからなる構造を採用しています。ユーザーは追従型ナビゲーションを通じて各「章」を自由に探索できます。この構造は、直線的なドキュメントを非線形の対話型体験に変えることで、ユーザーの理解とエンゲージメントを深めることを目的としています。各セクションは、要約テキスト、インタラクティブな図、チャートを組み合わせ、複雑な情報を段階的に、かつ視覚的に魅力的な方法で提示します。 -->
+    <!-- Visualization & Content Choices: 
+        - 課題 (Problem) -> 目的: 情報提供 -> 表現: インタラクティブな3カラムレイアウト -> 操作: ホバーでハイライト -> 理由: 静的なテキストを動的に見せ、ユーザーの注意を引くため。
+        - 解決策 (Solution) -> 目的: 関係性の提示 -> 表現: HTML/CSSによるダイアグラム -> 操作: クリックで要素を統合 -> 理由: 中核となるシナジー効果を視覚的に実証するため。
+        - 市場分析 (Market Analysis) -> 目的: 比較 -> 表現: Chart.jsによるバブルチャート -> 操作: ホバーでツールチップ表示 -> 理由: 静的な表よりも直感的でデータ豊富な比較を実現するため。
+        - ロードマップ (Roadmap) -> 目的: 時間経過に伴う変化の提示 -> 表現: インタラクティブな水平タイムライン -> 操作: クリックで詳細を展開 -> 理由: 複雑なフェーズ別データを、表よりも優れたUXで提供するため。
+        - 戦略提言 (Recommendations) -> 目的: 要約 -> 表現: アコーディオンUI -> 操作: クリックで展開 -> 理由: 最終セクションをクリーンに保ち、ユーザーが興味のある項目に集中できるようにするため。
+    -->
+    <!-- CONFIRMATION: NO SVG graphics used. NO Mermaid JS used. -->
+    <style>
+        body {
+            font-family: 'Noto Sans JP', sans-serif;
+            background-color: #111827;
+            color: #E5E7EB;
+        }
+        .nav-link {
+            transition: all 0.3s ease;
+            position: relative;
+        }
+        .nav-link:after {
+            content: '';
+            position: absolute;
+            width: 0;
+            height: 2px;
+            bottom: -4px;
+            left: 50%;
+            transform: translateX(-50%);
+            background-color: #34D399; /* Emerald-400 */
+            transition: width 0.3s ease;
+        }
+        .nav-link:hover:after, .nav-link.active:after {
+            width: 100%;
+        }
+        .glass-card {
+            background: rgba(31, 41, 55, 0.6); /* gray-800 with opacity */
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            border: 1px solid rgba(55, 65, 81, 0.5); /* gray-700 with opacity */
+        }
+        .hero-bg {
+            background: #111827;
+            position: relative;
+            overflow: hidden;
+        }
+        .hero-bg::before {
+            content: '';
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            width: 1200px;
+            height: 1200px;
+            transform: translate(-50%, -50%);
+            background: radial-gradient(circle, rgba(52, 211, 153, 0.1) 0%, rgba(52, 211, 153, 0) 60%);
+            animation: pulse 5s infinite;
+        }
+        @keyframes pulse {
+            0% { transform: translate(-50%, -50%) scale(0.8); opacity: 0.5; }
+            50% { transform: translate(-50%, -50%) scale(1.2); opacity: 1; }
+            100% { transform: translate(-50%, -50%) scale(0.8); opacity: 0.5; }
+        }
+        .chart-container {
+            position: relative;
+            width: 100%;
+            max-width: 800px;
+            margin-left: auto;
+            margin-right: auto;
+            height: 350px;
+            max-height: 450px;
+        }
+        @media (min-width: 768px) {
+            .chart-container {
+                height: 500px;
+            }
+        }
+        .timeline-dot div:first-child {
+            transition: all 0.3s ease;
+        }
+        .timeline-dot.active div:first-child {
+            border-color: #34D399;
+            transform: scale(1.2);
+        }
+        .timeline-dot.active div:first-child div {
+             background-color: #34D399;
+        }
+    </style>
+</head>
+<body class="antialiased">
+
+    <header id="navbar" class="bg-gray-900/80 backdrop-blur-md sticky top-0 z-50 shadow-lg shadow-green-500/5">
+        <nav class="container mx-auto px-6 py-3 flex justify-between items-center">
+            <a href="#top" class="text-xl font-bold text-white flex items-center">
+                <span class="text-green-400 mr-2">●</span>Mirai Compass
+            </a>
+            <div class="hidden md:flex space-x-8">
+                <a href="#problem" class="nav-link text-gray-300 hover:text-green-400">課題</a>
+                <a href="#solution" class="nav-link text-gray-300 hover:text-green-400">解決策</a>
+                <a href="#vision" class="nav-link text-gray-300 hover:text-green-400">製品ビジョン</a>
+                <a href="#market" class="nav-link text-gray-300 hover:text-green-400">市場分析</a>
+                <a href="#roadmap" class="nav-link text-gray-300 hover:text-green-400">ロードマップ</a>
+                <a href="#recommendations" class="nav-link text-gray-300 hover:text-green-400">戦略提言</a>
+            </div>
+            <button id="mobile-menu-button" class="md:hidden p-2 rounded-md focus:outline-none">
+                <div id="menu-icon-open">
+                    <span class="block w-6 h-0.5 bg-gray-300 mb-1"></span>
+                    <span class="block w-6 h-0.5 bg-gray-300 mb-1"></span>
+                    <span class="block w-6 h-0.5 bg-gray-300"></span>
+                </div>
+                <div id="menu-icon-close" class="hidden">
+                     <span class="block w-6 h-0.5 bg-gray-300 rotate-45 translate-y-0.5"></span>
+                     <span class="block w-6 h-0.5 bg-gray-300 -rotate-45 -translate-y-0.5"></span>
+                </div>
+            </button>
+        </nav>
+        <div id="mobile-menu" class="hidden md:hidden bg-gray-900/95">
+            <a href="#problem" class="block py-2 px-6 text-sm text-gray-300 hover:bg-gray-800">課題</a>
+            <a href="#solution" class="block py-2 px-6 text-sm text-gray-300 hover:bg-gray-800">解決策</a>
+            <a href="#vision" class="block py-2 px-6 text-sm text-gray-300 hover:bg-gray-800">製品ビジョン</a>
+            <a href="#market" class="block py-2 px-6 text-sm text-gray-300 hover:bg-gray-800">市場分析</a>
+            <a href="#roadmap" class="block py-2 px-6 text-sm text-gray-300 hover:bg-gray-800">ロードマップ</a>
+            <a href="#recommendations" class="block py-2 px-6 text-sm text-gray-300 hover:bg-gray-800">戦略提言</a>
+        </div>
+    </header>
+
+    <main>
+        <section id="top" class="hero-bg min-h-screen flex items-center">
+            <div class="container mx-auto px-6 text-center relative z-10">
+                <h1 class="text-4xl md:text-6xl font-bold text-white mb-4">Mirai Compass <span class="text-green-400">進化戦略</span></h1>
+                <p class="text-lg md:text-2xl text-gray-300 mb-8 max-w-3xl mx-auto">ウェルネス統合による次世代ライフデザイン・プラットフォームへの転換</p>
+                <p class="text-base md:text-lg text-gray-400 max-w-2xl mx-auto">「終活」という準備から、「より良く生きる」という自己実現へ。AI執事があなたの人生の旅路を伴走し、そのレガシーを未来へ繋ぎます。このレポートは、その変革のロードマップをインタラクティブに解き明かします。</p>
+                <a href="#problem" class="mt-10 inline-block bg-green-500 text-white font-bold py-3 px-8 rounded-full hover:bg-green-600 transition duration-300 transform hover:scale-105 shadow-lg shadow-green-500/20">戦略を探る</a>
+            </div>
+        </section>
+
+        <section id="problem" class="py-20 bg-gray-900">
+            <div class="container mx-auto px-6">
+                <h2 class="text-3xl font-bold text-center mb-4 text-white">「終活」を阻む<span class="text-green-400">3つの壁</span></h2>
+                <p class="text-center text-gray-400 mb-12 max-w-2xl mx-auto">従来の「終活」は、多くの人が直面する心理的・物理的な障壁により、先延ばしにされがちでした。Mirai Compassはこれらの根源的な課題を認識し、テクノロジーで解決することを目指します。</p>
+                <div class="grid md:grid-cols-3 gap-8">
+                    <div class="interactive-card text-center p-8 bg-gray-800 rounded-xl border border-gray-700 shadow-lg hover:shadow-green-500/20 hover:border-green-400 transition-all duration-300 transform hover:-translate-y-2">
+                        <div class="text-5xl mb-4">📋</div>
+                        <h3 class="text-xl font-bold mb-2 text-white">準備の壁</h3>
+                        <p class="text-gray-400">保険証券、不動産情報、手書きのメモ...。散在する情報を整理する圧倒的な面倒くささが、最初の一歩を妨げます。</p>
+                    </div>
+                    <div class="interactive-card text-center p-8 bg-gray-800 rounded-xl border border-gray-700 shadow-lg hover:shadow-green-500/20 hover:border-green-400 transition-all duration-300 transform hover:-translate-y-2">
+                        <div class="text-5xl mb-4">🔒</div>
+                        <h3 class="text-xl font-bold mb-2 text-white">保管の壁</h3>
+                        <p class="text-gray-400">最も機密性の高い個人情報を、一企業に預けることへの根源的な不安と信頼の欠如が、行動を躊躇させます。</p>
+                    </div>
+                    <div class="interactive-card text-center p-8 bg-gray-800 rounded-xl border border-gray-700 shadow-lg hover:shadow-green-500/20 hover:border-green-400 transition-all duration-300 transform hover:-translate-y-2">
+                        <div class="text-5xl mb-4">🎯</div>
+                        <h3 class="text-xl font-bold mb-2 text-white">目的の壁</h3>
+                        <p class="text-gray-400">「死への備え」というネガティブなイメージが先行し、行動を後回しにする最大の心理的障壁となっています。</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section id="solution" class="py-20 bg-gray-800/50">
+            <div class="container mx-auto px-6">
+                <h2 class="text-3xl font-bold text-center mb-4 text-white">解決策：ウェルネスとの<span class="text-green-400">戦略的統合</span></h2>
+                <p class="text-center text-gray-400 mb-12 max-w-3xl mx-auto">「目的の壁」を打ち破る鍵は、議論の起点を「死後の準備」から「人生をどう豊かに生きるか」へと転換することにあります。これがMirai CompassとWellness Lifeの統合がもたらす価値の昇華です。</p>
+                <div class="flex flex-col items-center">
+                    <div id="integration-diagram" class="flex flex-col md:flex-row items-center justify-center space-y-4 md:space-y-0 md:space-x-8 mb-8">
+                        <div id="mirai-compass-circle" class="w-48 h-48 rounded-full border-4 border-blue-400 flex flex-col justify-center items-center text-center p-4 transition-all duration-500 bg-gray-800 shadow-lg">
+                            <h4 class="font-bold text-white">Mirai Compass</h4>
+                            <p class="text-sm text-gray-400">情報を未来へ繋ぐ<br>信頼の「器」(HOW)</p>
+                        </div>
+                        <div id="plus-icon" class="text-4xl font-light text-gray-500 transition-all duration-500 opacity-100">+</div>
+                        <div id="wellness-life-circle" class="w-48 h-48 rounded-full border-4 border-green-400 flex flex-col justify-center items-center text-center p-4 transition-all duration-500 bg-gray-800 shadow-lg">
+                            <h4 class="font-bold text-white">Wellness Life</h4>
+                            <p class="text-sm text-gray-400">より良く生きる<br>意義深い「中身」(WHY)</p>
+                        </div>
+                    </div>
+                    <button id="integrate-button" class="bg-green-500 text-white font-bold py-3 px-8 rounded-full hover:bg-green-600 transition duration-300 mb-8 shadow-lg shadow-green-500/20">統合効果を見る</button>
+                    <div id="result-text" class="text-center transition-opacity duration-500 opacity-0 max-w-2xl">
+                        <h3 class="text-2xl font-bold mb-2 text-green-400">次世代ライフ＆ウェルネス・プラットフォーム</h3>
+                        <p class="text-gray-300">この統合により、ユーザーの動機は「ペイン回避（死への備え）」から「ゲイン創出（充実した人生のデザイン）」へと能動的に変化します。安全なデジタル金庫は、自己実現の旅路を記録する「パーソナル・サンクチュアリ」へと進化します。</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section id="vision" class="py-20 bg-gray-900">
+            <div class="container mx-auto px-6">
+                <h2 class="text-3xl font-bold text-center mb-4 text-white">進化した製品ビジョン：「<span class="text-green-400">ウェルネス・コンパス</span>」</h2>
+                 <p class="text-center text-gray-400 mb-12 max-w-3xl mx-auto">Mirai Compassは、受動的な情報保管庫から、利用者の自己発見と持続的なエンゲージメントを促す動的なプラットフォームへと変貌します。その核心が「ウェルネス・コンパス」モジュールです。</p>
+                <div class="grid md:grid-cols-2 gap-12 items-start">
+                    <div class="glass-card rounded-xl p-8 shadow-lg">
+                        <h3 class="text-2xl font-bold mb-4 flex items-center text-white"><span class="text-3xl mr-3">🧠</span>AIライフコーチ</h3>
+                        <p class="mb-6 text-gray-300">受動的な「AI執事」から、利用者の内面的な成長を促す「AIライフコーチ」へ。非認知能力の育成フレームワークに基づき、自己理解とレジリエンスを育む対話パートナーとなります。</p>
+                        <div class="space-y-4">
+                            <div class="p-4 border-l-4 border-blue-400 bg-gray-800 rounded-r-lg">
+                                <h4 class="font-semibold text-white">自分と向き合う力</h4>
+                                <p class="text-sm text-gray-400">レジリエンスや自制心を養うための、感情を客観視する思考法を提案します。</p>
+                            </div>
+                            <div class="p-4 border-l-4 border-green-400 bg-gray-800 rounded-r-lg">
+                                <h4 class="font-semibold text-white">自分を高める力</h4>
+                                <p class="text-sm text-gray-400">意欲や自尊感情を引き出し、新たな目標設定や興味の探求を促します。</p>
+                            </div>
+                            <div class="p-4 border-l-4 border-yellow-400 bg-gray-800 rounded-r-lg">
+                                <h4 class="font-semibold text-white">他者とつながる力</h4>
+                                <p class="text-sm text-gray-400">家族とのコミュニケーションを円滑にするための対話シミュレーションなどを提供します。</p>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="glass-card rounded-xl p-8 shadow-lg">
+                        <h3 class="text-2xl font-bold mb-4 flex items-center text-white"><span class="text-3xl mr-3">🎙️</span>声紋分析によるウェルネス・モニタリング</h3>
+                        <p class="mb-6 text-gray-300">スマートフォンに6秒間話すだけで、声の周波数を分析し、ストレス度や感情状態を客観的に可視化。主観から客観的なデータへとウェルネス評価をシフトさせます。</p>
+                        <div id="data-moat-diagram" class="text-center">
+                           <div class="relative inline-block">
+                                <div class="w-32 h-32 rounded-full bg-gray-700 flex justify-center items-center text-white font-bold text-lg shadow-inner">Mirai Compass</div>
+                                <div id="moat-ring-1" class="absolute top-1/2 left-1/2 w-48 h-48 border-2 border-dashed border-green-400 rounded-full -translate-x-1/2 -translate-y-1/2 transition-all duration-700 scale-0 opacity-0"></div>
+                                <div id="moat-ring-2" class="absolute top-1/2 left-1/2 w-64 h-64 border-2 border-dashed border-green-400 rounded-full -translate-x-1/2 -translate-y-1/2 transition-all duration-700 delay-200 scale-0 opacity-0"></div>
+                           </div>
+                           <button id="moat-button" class="mt-6 bg-green-500 text-white font-bold py-2 px-6 rounded-full hover:bg-green-600 transition duration-300 shadow-lg shadow-green-500/20">独自のデータモートを構築</button>
+                           <p id="moat-text" class="mt-4 text-sm text-gray-400 opacity-0 transition-opacity duration-500">継続的なウェルネスの時系列データを蓄積することで、競合が追随不可能な「データモート」を構築し、パーソナライズ精度を飛躍的に向上させます。</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section id="market" class="py-20 bg-gray-800/50">
+            <div class="container mx-auto px-6">
+                <h2 class="text-3xl font-bold text-center mb-4 text-white">市場分析：ウェルネスという<span class="text-green-400">ブルーオーシャン</span></h2>
+                <p class="text-center text-gray-400 mb-12 max-w-3xl mx-auto">既存のデジタル遺産サービスは、法務・財務のサポートに集中しており、利用者の「QOL向上」という領域は手付かずの空白地帯です。ここにMirai Compassの巨大な機会が存在します。</p>
+                <div class="chart-container p-4 bg-gray-900/50 rounded-lg border border-gray-700">
+                    <canvas id="competitiveChart"></canvas>
+                </div>
+                 <p class="text-center text-xs text-gray-500 mt-4">※バブルの大きさは概念的な市場での存在感を示します。</p>
+            </div>
+        </section>
+
+        <section id="roadmap" class="py-20 bg-gray-900">
+            <div class="container mx-auto px-6">
+                <h2 class="text-3xl font-bold text-center mb-4 text-white">統合<span class="text-green-400">ロードマップ</span></h2>
+                <p class="text-center text-gray-400 mb-12 max-w-3xl mx-auto">技術基盤を固めながら、市場価値を段階的に高めていくための実行計画です。フェーズをクリックして詳細を確認してください。</p>
+                <div class="relative w-full">
+                    <div class="absolute left-0 top-1/2 w-full h-1 bg-gray-700 -translate-y-1/2"></div>
+                    <div id="timeline-progress" class="absolute left-0 top-1/2 w-0 h-1 bg-green-500 -translate-y-1/2 transition-all duration-500"></div>
+                    <div class="relative flex justify-between">
+                        <div class="timeline-dot" data-phase="1">
+                            <div class="w-6 h-6 rounded-full bg-gray-900 border-4 border-gray-600 cursor-pointer flex items-center justify-center">
+                                <div class="w-2 h-2 rounded-full bg-gray-500"></div>
+                            </div>
+                            <p class="mt-2 text-sm text-center font-semibold">Phase 1</p>
+                        </div>
+                        <div class="timeline-dot" data-phase="2">
+                            <div class="w-6 h-6 rounded-full bg-gray-900 border-4 border-gray-600 cursor-pointer flex items-center justify-center">
+                                <div class="w-2 h-2 rounded-full bg-gray-500"></div>
+                            </div>
+                            <p class="mt-2 text-sm text-center font-semibold">Phase 2</p>
+                        </div>
+                        <div class="timeline-dot" data-phase="3">
+                            <div class="w-6 h-6 rounded-full bg-gray-900 border-4 border-gray-600 cursor-pointer flex items-center justify-center">
+                                <div class="w-2 h-2 rounded-full bg-gray-500"></div>
+                            </div>
+                            <p class="mt-2 text-sm text-center font-semibold">Phase 3</p>
+                        </div>
+                        <div class="timeline-dot" data-phase="4">
+                            <div class="w-6 h-6 rounded-full bg-gray-900 border-4 border-gray-600 cursor-pointer flex items-center justify-center">
+                                <div class="w-2 h-2 rounded-full bg-gray-500"></div>
+                            </div>
+                             <p class="mt-2 text-sm text-center font-semibold">Phase 4</p>
+                        </div>
+                    </div>
+                </div>
+                <div id="timeline-details" class="mt-10">
+                </div>
+            </div>
+        </section>
+
+        <section id="recommendations" class="py-20 bg-gray-800/50">
+            <div class="container mx-auto px-6 max-w-4xl">
+                <h2 class="text-3xl font-bold text-center mb-4 text-white">4つの<span class="text-green-400">戦略的提言</span></h2>
+                <p class="text-center text-gray-400 mb-12">Mirai Compassが次世代プラットフォームへと飛躍するために、最優先で実行すべきアクションプランです。</p>
+                <div id="accordion" class="space-y-4">
+                    <!-- Accordion items will be injected by JS -->
+                </div>
+            </div>
+        </section>
+
+    </main>
+    
+    <footer class="bg-gray-900 py-6 border-t border-gray-800">
+        <div class="container mx-auto px-6 text-center text-gray-500 text-sm">
+            &copy; 2025 Mirai Compass (Conceptual Model). All Rights Reserved.
+        </div>
+    </footer>
+
+<script>
+document.addEventListener('DOMContentLoaded', () => {
+
+    const setupMobileMenu = () => {
+        const mobileMenuButton = document.getElementById('mobile-menu-button');
+        const mobileMenu = document.getElementById('mobile-menu');
+        const menuIconOpen = document.getElementById('menu-icon-open');
+        const menuIconClose = document.getElementById('menu-icon-close');
+
+        mobileMenuButton.addEventListener('click', () => {
+            mobileMenu.classList.toggle('hidden');
+            menuIconOpen.classList.toggle('hidden');
+            menuIconClose.classList.toggle('hidden');
+        });
+        
+        document.querySelectorAll('#mobile-menu a').forEach(link => {
+            link.addEventListener('click', () => {
+                mobileMenu.classList.add('hidden');
+                menuIconOpen.classList.remove('hidden');
+                menuIconClose.classList.add('hidden');
+            });
+        });
+    };
+    
+    const setupNavbarObserver = () => {
+        const sections = document.querySelectorAll('main section');
+        const navLinks = document.querySelectorAll('.nav-link');
+
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    navLinks.forEach(link => {
+                        link.classList.remove('active');
+                        if (link.getAttribute('href').substring(1) === entry.target.id) {
+                            link.classList.add('active');
+                        }
+                    });
+                }
+            });
+        }, { threshold: 0.5 });
+
+        sections.forEach(section => {
+            observer.observe(section);
+        });
+    };
+
+    const setupIntegrationAnimation = () => {
+        const button = document.getElementById('integrate-button');
+        const miraiCircle = document.getElementById('mirai-compass-circle');
+        const wellnessCircle = document.getElementById('wellness-life-circle');
+        const plusIcon = document.getElementById('plus-icon');
+        const resultText = document.getElementById('result-text');
+
+        button.addEventListener('click', () => {
+            miraiCircle.style.transform = 'translateX(50%) scale(0.9)';
+            wellnessCircle.style.transform = 'translateX(-50%) scale(0.9)';
+            plusIcon.style.opacity = '0';
+            
+            setTimeout(() => {
+                miraiCircle.style.transform = 'translateX(0) scale(1.1)';
+                miraiCircle.style.borderColor = '#34D399';
+                miraiCircle.innerHTML = `<h4 class="font-bold text-white">ライフ＆ウェルネス<br>プラットフォーム</h4>`;
+                wellnessCircle.style.transform = 'translateX(0) scale(0)';
+                wellnessCircle.style.opacity = '0';
+            }, 500);
+            
+            setTimeout(() => {
+                resultText.style.opacity = '1';
+                button.style.display = 'none';
+            }, 1000);
+        });
+    };
+
+    const setupDataMoatAnimation = () => {
+        const button = document.getElementById('moat-button');
+        const ring1 = document.getElementById('moat-ring-1');
+        const ring2 = document.getElementById('moat-ring-2');
+        const moatText = document.getElementById('moat-text');
+
+        button.addEventListener('click', () => {
+            ring1.style.transform = 'translate(-50%, -50%) scale(1)';
+            ring1.style.opacity = '1';
+            ring2.style.transform = 'translate(-50%, -50%) scale(1)';
+            ring2.style.opacity = '1';
+            moatText.style.opacity = '1';
+        });
+    };
+
+    const createCompetitiveChart = () => {
+        const ctx = document.getElementById('competitiveChart').getContext('2d');
+        Chart.defaults.color = '#9CA3AF';
+        Chart.defaults.borderColor = '#374151';
+
+        new Chart(ctx, {
+            type: 'bubble',
+            data: {
+                datasets: [{
+                    label: 'Mirai Compass (進化後)',
+                    data: [{ x: 9, y: 9, r: 25 }],
+                    backgroundColor: 'rgba(52, 211, 153, 0.7)',
+                    borderColor: 'rgb(52, 211, 153)',
+                }, {
+                    label: 'Trust & Will',
+                    data: [{ x: 3, y: 4, r: 18 }],
+                    backgroundColor: 'rgba(251, 191, 36, 0.7)', // amber-400
+                    borderColor: 'rgb(251, 191, 36)',
+                }, {
+                    label: 'Everplans',
+                    data: [{ x: 2, y: 2, r: 20 }],
+                    backgroundColor: 'rgba(96, 165, 250, 0.7)', // blue-400
+                    borderColor: 'rgb(96, 165, 250)',
+                }, {
+                    label: 'GoodTrust',
+                    data: [{ x: 2.5, y: 1, r: 15 }],
+                    backgroundColor: 'rgba(156, 163, 175, 0.7)', // gray-400
+                    borderColor: 'rgb(156, 163, 175)',
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: {
+                    legend: {
+                        position: 'bottom',
+                        labels: {
+                            color: '#E5E7EB'
+                        }
+                    },
+                    tooltip: {
+                         callbacks: {
+                            label: function(context) {
+                                let label = context.dataset.label || '';
+                                if (label) {
+                                    label += ': ';
+                                }
+                                label += `(セキュリティ: ${context.parsed.x}, ウェルネス: ${context.parsed.y})`;
+                                return label;
+                            }
+                        }
+                    }
+                },
+                scales: {
+                    x: {
+                        title: {
+                            display: true,
+                            text: 'セキュリティモデルの先進性 →',
+                            font: { size: 14 },
+                            color: '#9CA3AF'
+                        },
+                        min: 0,
+                        max: 10,
+                        grid: { color: '#374151' },
+                        ticks: {
+                           color: '#9CA3AF',
+                           callback: function(value, index, values) {
+                               return value === 2.5 ? '中央集権型' : (value === 9 ? '分散型' : '');
+                           }
+                        }
+                    },
+                    y: {
+                        title: {
+                            display: true,
+                            text: 'ウェルネス統合の深さ →',
+                            font: { size: 14 },
+                            color: '#9CA3AF'
+                        },
+                        min: 0,
+                        max: 10,
+                        grid: { color: '#374151' },
+                        ticks: {
+                           color: '#9CA3AF',
+                           callback: function(value, index, values) {
+                               return value === 2.5 ? '限定的' : (value === 9 ? '完全統合' : '');
+                           }
+                        }
+                    }
+                }
+            }
+        });
+    };
+
+    const setupChartObserver = () => {
+        const chartSection = document.getElementById('market');
+        let chartCreated = false;
+
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting && !chartCreated) {
+                    createCompetitiveChart();
+                    chartCreated = true;
+                    observer.unobserve(chartSection);
+                }
+            });
+        }, { threshold: 0.25 });
+
+        observer.observe(chartSection);
+    };
+
+    const setupTimeline = () => {
+        const dots = document.querySelectorAll('.timeline-dot');
+        const detailsContainer = document.getElementById('timeline-details');
+        const progress = document.getElementById('timeline-progress');
+        
+        const timelineData = {
+            '1': {
+                title: 'Phase 1: MVP強化と「コンテンツとしてのウェルネス」検証',
+                duration: '0〜6ヶ月',
+                goal: 'AI対話プロンプトや教育コンテンツで市場の反応を検証。VOICETECHのPoCを開始。',
+                color: 'blue'
+            },
+            '2': {
+                title: 'Phase 2: 「ウェルネス・コンパス」モジュール投入',
+                duration: '6〜12ヶ月',
+                goal: 'AIライフコーチと声紋分析のベータ版をローンチ。法人向け提案の準備を開始。',
+                color: 'green'
+            },
+            '3': {
+                title: 'Phase 3: B2B2C法人向けパッケージ展開',
+                duration: '12〜24ヶ月',
+                goal: '「健康経営支援パッケージ」を正式ローンチし、法人契約を主要な収益源に育成。',
+                color: 'yellow'
+            },
+            '4': {
+                title: 'Phase 4: エコシステム拡大とプラットフォーム化',
+                duration: '24ヶ月〜',
+                goal: '外部パートナーと連携するAPIを開発し、人生の旅における中心的プラットフォームを確立。',
+                color: 'red'
+            }
+        };
+
+        const colorMap = {
+            blue: 'bg-blue-500/10 text-blue-300',
+            green: 'bg-green-500/10 text-green-300',
+            yellow: 'bg-yellow-500/10 text-yellow-300',
+            red: 'bg-red-500/10 text-red-300',
+        }
+
+        function updateDetails(phase) {
+            const data = timelineData[phase];
+            detailsContainer.innerHTML = `
+                <div class="glass-card p-6 rounded-lg shadow-lg border border-gray-700 animate-fade-in">
+                    <span class="text-sm font-bold ${colorMap[data.color]} py-1 px-3 rounded-full">${data.duration}</span>
+                    <h4 class="text-xl font-bold mt-3 mb-2 text-white">${data.title}</h4>
+                    <p class="text-gray-300">${data.goal}</p>
+                </div>
+            `;
+            
+            dots.forEach(d => {
+                d.classList.remove('active');
+                if(d.dataset.phase === phase) {
+                   d.classList.add('active');
+                }
+            });
+
+            const progressPercentage = ((parseInt(phase) - 1) / 3) * 100;
+            progress.style.width = `${progressPercentage}%`;
+        }
+        
+        dots.forEach(dot => {
+            dot.addEventListener('click', () => updateDetails(dot.dataset.phase));
+        });
+
+        updateDetails('1'); 
+    };
+    
+    const setupAccordion = () => {
+        const container = document.getElementById('accordion');
+        const accordionData = [
+            {
+                title: 'ブランド・ナラティブの再定義',
+                content: '全てのコミュニケーションを、「終活」から「インテリジェント・ライフ＆ウェルネス・デザイン」へと全面的に転換。市場の心理的障壁を乗り越え、導入ハードルを劇的に下げます。'
+            },
+            {
+                title: '声紋分析技術の最優先統合',
+                content: '競合に対する決定的な技術的差別化要因であり、長期的なデータモート（参入障壁）の基盤となるVOICETECHシステムの統合を最速で推進します。'
+            },
+            {
+                title: 'AIコアの進化：オーガナイザーからコーチへ',
+                content: 'AI執事の開発の焦点を、データ整理から、非認知能力の育成を支援する「コーチ」へとシフト。継続的なエンゲージメントの源泉を創出します。'
+            },
+            {
+                title: 'デュアルGTM（市場投入）戦略の実行',
+                content: 'B2Cのユーザーベースを構築すると同時に、収益性が高く需要が顕在化しているB2B2Cの法人ウェルネス市場を積極的に開拓し、事業の成長速度と安定性を最大化します。'
+            }
+        ];
+
+        container.innerHTML = accordionData.map((item, index) => `
+            <div class="accordion-item bg-gray-800 rounded-lg shadow-sm border border-gray-700">
+                <button class="accordion-header w-full flex justify-between items-center text-left p-5 font-semibold text-gray-200 hover:text-white">
+                    <span>${item.title}</span>
+                    <span class="accordion-icon transition-transform duration-300 transform text-green-400 text-2xl font-light">+</span>
+                </button>
+                <div class="accordion-content overflow-hidden max-h-0 transition-all duration-500 ease-in-out">
+                    <p class="p-5 pt-0 text-gray-400">${item.content}</p>
+                </div>
+            </div>
+        `).join('');
+
+        const items = container.querySelectorAll('.accordion-item');
+        items.forEach(item => {
+            const header = item.querySelector('.accordion-header');
+            const content = item.querySelector('.accordion-content');
+            const icon = item.querySelector('.accordion-icon');
+
+            header.addEventListener('click', () => {
+                const isOpen = content.style.maxHeight && content.style.maxHeight !== '0px';
+
+                items.forEach(i => {
+                    i.querySelector('.accordion-content').style.maxHeight = '0px';
+                    i.querySelector('.accordion-icon').classList.remove('rotate-45');
+                    i.querySelector('.accordion-icon').textContent = '+';
+                });
+
+                if (!isOpen) {
+                    content.style.maxHeight = content.scrollHeight + 'px';
+                    icon.classList.add('rotate-45');
+                    icon.textContent = '+';
+                }
+            });
+        });
+    };
+
+    setupMobileMenu();
+    setupNavbarObserver();
+    setupIntegrationAnimation();
+    setupDataMoatAnimation();
+    setupChartObserver();
+    setupTimeline();
+    setupAccordion();
+});
+</script>
+
+</body>
+</html>
